@@ -1,0 +1,19 @@
+version: "2"
+services:
+  gpt:
+    container_name: gpt
+    restart: always
+    build: .
+    ports:
+      - "3099:3099"
+    environment:
+      - OPENAI_API_KEY=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
+      - TELEGRAM_API_KEY=5731132161:AAGztEQ9rnR5Ya6aXRKeDGGzxJsayDOlqek
+      - REDIS=gpt-redis
+    links:
+      - gpt-redis
+  gpt-redis:
+    container_name: gpt-redis
+    image: redis
+    ports:
+      - "6379:6379"
