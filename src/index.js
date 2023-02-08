@@ -25,7 +25,7 @@ const onMessage = async (ctx) => {
 
 const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY })
 const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
-const redis = createClient({ url: "redis://" + process.env.REDIS, password: process.env.REDIS_PASSWORD })
+const redis = createClient({ socket: { host: process.env.REDIS, port: 6379 }, password: process.env.REDIS_PASSWORD })
 
 redis.on("error", error => console.log("Redis Client Error", error))
 
