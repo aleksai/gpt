@@ -1,0 +1,27 @@
+version: "2"
+services:
+  gpt-dev:
+    container_name: gpt-dev
+    restart: always
+    build:
+        args:
+            COMMAND: "nodemon"
+    image: gpt
+    container_name: gpt
+    ports:
+      - "3099:3099"
+    volumes:
+      - ./src:/app/src
+    environment:
+      - OPENAI_API_KEY=
+      - TELEGRAM_API_KEY=
+      - REDIS=gpt-redis
+      - REDIS_PASSWORD=AnyRedisDevPassword
+    links:
+      - gpt-redis
+  gpt-redis:
+    container_name: gpt-redis
+    image: redis
+    command: /bin/sh -c "redis-server --requirepass AnyRedisDevPassword"
+    ports:
+      - "6379:6379"
