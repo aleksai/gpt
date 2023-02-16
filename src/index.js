@@ -3,6 +3,13 @@ import { Telegraf } from "telegraf"
 import { message } from "telegraf/filters"
 import { createClient } from "redis"
 
+const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY })
+const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
+const redis = createClient({ url: "redis://:" + process.env.REDIS_PASSWORD + "@" + process.env.REDIS + ":6379" })
+
+redis.on("error", error => console.log("Redis Client Error", error))
+await redis.connect()
+
 const onMessage = async (ctx) => {
 	try {
 		ctx.sendChatAction("typing")
@@ -23,14 +30,6 @@ const onMessage = async (ctx) => {
 	}
 }
 
-const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY })
-const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
-const redis = createClient({ url: "redis://:" + process.env.REDIS_PASSWORD + "@" + process.env.REDIS + ":6379" })
-
-redis.on("error", error => console.log("Redis Client Error", error))
-
-await redis.connect()
-
 bot.start((ctx) => ctx.reply("Hello."))
 bot.on(message("text"), onMessage)
 bot.launch()
@@ -39,6 +38,7 @@ process.once("SIGINT", async () => {
 	await redis.disconnect()
 	bot.stop("SIGINT")
 })
+
 process.once("SIGTERM", async () => {
 	await redis.disconnect()
 	bot.stop("SIGTERM")
