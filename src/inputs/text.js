@@ -1,9 +1,13 @@
 import { message } from "telegraf/filters"
 
 export default function text(bot, api, redis) {
+	const isPrivateChat = (ctx) => {
+		return ctx.message.chat.type === "private"
+	}
+
 	const isReply = (ctx) => {
 		if(!ctx.message.reply_to_message) return false
-		return ctx.message.reply_to_message.from.id === 5628789956
+		return ctx.message.reply_to_message.from.id === ctx.botInfo.id
 	}
 
 	const isMention = (ctx) => {
@@ -12,15 +16,14 @@ export default function text(bot, api, redis) {
 			const entity = ctx.message.entities[i]
 			if(entity.type === "mention") {
 				const mention = ctx.message.text.substring(entity.offset, entity.length)
-				if(mention === "@LitCommitDevBot") return true
+				if(mention === "@" + ctx.botInfo.username) return true
 			}
 		}
 	}
 
 	const onMessage = async (ctx) => {
-		console.log(ctx)
 		try {
-			if(isReply(ctx) || isMention(ctx)) {
+			if(isPrivateChat(ctx) || isReply(ctx) || isMention(ctx)) {
 				ctx.sendChatAction("typing")
 
 				const conversationId = await redis.get("conversationId_" + ctx.message.chat.id)
