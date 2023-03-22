@@ -27,8 +27,14 @@ export default function text(bot, api, redis) {
 				ctx.sendChatAction("typing")
 
 				const parentMessageId = await redis.get("parentMessageId_" + ctx.message.chat.id)
+				const systemMessage = await redis.get("systemMessage_" + ctx.message.chat.id)
 
-				const res = await api.sendMessage(ctx.message.text, parentMessageId ? { parentMessageId } : {})
+				var options = {}
+
+				if(parentMessageId) options.parentMessageId = parentMessageId
+				if(systemMessage) options.systemMessage = systemMessage
+
+				const res = await api.sendMessage(ctx.message.text, options)
 
 				await redis.set("parentMessageId_" + ctx.message.chat.id, res.id)
 
@@ -37,7 +43,7 @@ export default function text(bot, api, redis) {
 		} catch(error) {
 			console.log("🛑 ERROR ON MESSAGE", error)
 
-			ctx.reply("Try again later")
+			ctx.reply("Something strange happens, code 000")
 		}
 	}
 
