@@ -18,6 +18,7 @@ export default function text(bot, api, redis) {
 	}
 
 	const onMessage = async (ctx) => {
+		console.log(ctx)
 		try {
 			if(isReply(ctx) || isMention(ctx)) {
 				ctx.sendChatAction("typing")
