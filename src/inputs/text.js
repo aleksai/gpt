@@ -26,12 +26,10 @@ export default function text(bot, api, redis) {
 			if(isPrivateChat(ctx) || isReply(ctx) || isMention(ctx)) {
 				ctx.sendChatAction("typing")
 
-				const conversationId = await redis.get("conversationId_" + ctx.message.chat.id)
 				const parentMessageId = await redis.get("parentMessageId_" + ctx.message.chat.id)
 
-				const res = await api.sendMessage(ctx.message.text, conversationId && parentMessageId ? { conversationId, parentMessageId } : {})
+				const res = await api.sendMessage(ctx.message.text, parentMessageId ? { parentMessageId } : {})
 
-				await redis.set("conversationId_" + ctx.message.chat.id, res.conversationId)
 				await redis.set("parentMessageId_" + ctx.message.chat.id, res.id)
 
 				ctx.reply(res.text)

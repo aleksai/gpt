@@ -9,14 +9,15 @@ const api = new ChatGPTAPI({
 	completionParams: { model: "gpt-3.5-turbo-0301" },
 	// debug: true
 })
-const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
+
 const redis = createClient({
-	// legacyMode: true,
 	url: "redis://:" + process.env.REDIS_PASSWORD + "@" + process.env.REDIS + ":6379"
 })
 
 redis.on("error", error => console.log("🛑 ERROR REDIS", error))
 await redis.connect()
+
+const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
 
 bot.start((ctx) => ctx.reply("Hello."))
 
