@@ -5,7 +5,7 @@ import { createClient } from "redis"
 import text from "./inputs/text.js"
 import mention from "./inputs/mention.js"
 
-const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY, debug: true, completionParams: { model: "gpt-4" }})
+const api = new ChatGPTAPI({ apiKey: process.env.OPENAI_API_KEY, debug: true, completionParams: { model: "gpt-3.5-turbo-0301" }})
 const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
 const redis = createClient({ url: "redis://:" + process.env.REDIS_PASSWORD + "@" + process.env.REDIS + ":6379" })
 
