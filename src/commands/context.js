@@ -7,7 +7,7 @@ export default function text(bot, api, redis) {
 
 			for (var i = 0; i < ctx.message.entities.length; i++) {
 				const entity = ctx.message.entities[i]
-				console.log(entity)
+				
 				if(entity.type === "bot_command") {
 					const index = entity.length + 1
 
